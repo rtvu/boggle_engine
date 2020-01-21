@@ -15,8 +15,8 @@ defmodule BoggleEngine.Board.Die do
     result
   end
 
-  defp make_die([rest], result) do
-    [rest | result]
+  defp make_die([head], result) do
+    [head | result]
   end
 
   defp make_die([first, second | rest], result) do
