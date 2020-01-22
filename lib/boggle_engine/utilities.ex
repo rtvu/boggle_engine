@@ -36,7 +36,14 @@ defmodule BoggleEngine.Utilities do
   end
 
   # Determines if letter is uppercase.
-  defp uppercase?(letter) do
+  def uppercase?(letter) do
     letter == String.upcase(letter)
+  end
+
+  # Converts integer to string representation with 0s as lead padding.
+  def integer_to_string_with_padding(integer, count) do
+    integer
+    |> Integer.to_string()
+    |> String.pad_leading(count, "0")
   end
 end

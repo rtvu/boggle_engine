@@ -20,7 +20,8 @@ defmodule BoggleEngine.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
-      {:lexicon, "~> 0.2.0"}
+      {:lexicon, "~> 0.2.0"},
+      {:erlang_algorithms, github: "aggelgian/erlang-algorithms", app: false}
     ]
   end
 end
