@@ -5,14 +5,14 @@ defmodule BoggleEngine.Board.DiceSet do
 
   alias BoggleEngine.Board.Die
 
-  # Get a dice set from file.
+  # Gets a dice set from file.
   def from_file(path) do
     path
     |> File.read!()
     |> from_string()
   end
 
-  # Get a dice set from string.
+  # Gets a dice set from string.
   def from_string(string) do
     string
     |> String.trim()
