@@ -3,10 +3,9 @@ defmodule BoggleEngine.Board.DieTest do
 
   alias BoggleEngine.Board.Die
 
-  defp format_die(specification) do
-    specification
-    |> String.graphemes()
-    |> Die.make_die()
+  defp format_die(string) do
+    string
+    |> Die.from_string()
     |> Enum.sort()
   end
 

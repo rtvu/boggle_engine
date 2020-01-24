@@ -18,7 +18,6 @@ defmodule BoggleEngine.Board.DiceSet do
     |> String.trim()
     |> String.split()
     |> Stream.map(&String.trim/1)
-    |> Stream.map(&String.graphemes/1)
-    |> Enum.map(&Die.make_die/1)
+    |> Enum.map(&Die.from_string/1)
   end
 end

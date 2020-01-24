@@ -22,8 +22,7 @@ defmodule BoggleEngine.Board do
   # Generates a %Board{} from configuration string.
   def from_string(configuration) do
     configuration
-    |> String.graphemes()
-    |> Utilities.chunk_on_uppercase()
+    |> Utilities.chunk_string_on_uppercase()
     |> from_list()
   end
 
@@ -73,8 +72,7 @@ defmodule BoggleEngine.Board do
 
   def valid_board?(configuration) when is_binary(configuration) do
     configuration
-    |> String.graphemes()
-    |> Utilities.chunk_on_uppercase()
+    |> Utilities.chunk_string_on_uppercase()
     |> valid_board?()
   end
 

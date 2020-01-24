@@ -6,8 +6,8 @@ defmodule BoggleEngine.Board.Die do
 
   alias BoggleEngine.Utilities
 
-  # Converts a specification to a die.
-  def make_die(specification) do
-    Utilities.chunk_on_uppercase(specification)
+  # Gets a die from string.
+  def from_string(string) do
+    Utilities.chunk_string_on_uppercase(string)
   end
 end
