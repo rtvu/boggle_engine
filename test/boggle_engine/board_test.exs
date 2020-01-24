@@ -21,6 +21,7 @@ defmodule BoggleEngine.BoardTest do
   test "boggle board" do
     :rand.seed(:exsplus, {101, 102, 103})
     version = :boggle
+    size = 4
     board = Board.new_board(version)
     configuration_string = Board.to_string(board)
     configuration_list = Board.to_list(board)
@@ -31,11 +32,14 @@ defmodule BoggleEngine.BoardTest do
     assert board == board_from_string
     assert board == board_from_list
     assert Board.get_value(board, 0) == List.first(configuration_list)
+    assert Board.get_size(board) == size
+    assert Board.get_size(version) == size
   end
 
   test "big boggle board" do
     :rand.seed(:exsplus, {101, 102, 103})
     version = :big_boggle
+    size = 5
     board = Board.new_board(version)
     configuration_string = Board.to_string(board)
     configuration_list = Board.to_list(board)
@@ -46,11 +50,14 @@ defmodule BoggleEngine.BoardTest do
     assert board == board_from_string
     assert board == board_from_list
     assert Board.get_value(board, 0) == List.first(configuration_list)
+    assert Board.get_size(board) == size
+    assert Board.get_size(version) == size
   end
 
   test "super big boggle board" do
     :rand.seed(:exsplus, {101, 102, 103})
     version = :super_big_boggle
+    size = 6
     board = Board.new_board(version)
     configuration_string = Board.to_string(board)
     configuration_list = Board.to_list(board)
@@ -61,5 +68,7 @@ defmodule BoggleEngine.BoardTest do
     assert board == board_from_string
     assert board == board_from_list
     assert Board.get_value(board, 0) == List.first(configuration_list)
+    assert Board.get_size(board) == size
+    assert Board.get_size(version) == size
   end
 end

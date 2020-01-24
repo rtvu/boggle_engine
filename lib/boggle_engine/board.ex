@@ -33,7 +33,7 @@ defmodule BoggleEngine.Board do
   # be truncated if longer than board version. Configuration will have blanks
   # appended if shorter than board version.
   def from_list(list, version) do
-    size = @board_sizes[version]
+    size = get_size(version)
     configuration =
       list
       |> fit_configuration(size * size)
@@ -50,7 +50,7 @@ defmodule BoggleEngine.Board do
 
   # Gets configuration as a list of strings.
   def to_list(%Board{configuration: configuration, version: version}) do
-    size = @board_sizes[version]
+    size = get_size(version)
     for position <- 0..(size * size - 1) do
       configuration[position]
     end
@@ -59,6 +59,15 @@ defmodule BoggleEngine.Board do
   # Gets value based on board position.
   def get_value(%Board{configuration: configuration}, position) do
     configuration[position]
+  end
+
+  # Gets board size.
+  def get_size(%Board{version: version}) do
+    get_size(version)
+  end
+
+  def get_size(version) do
+    @board_sizes[version]
   end
 
   # Configuration will be truncated if longer than count. Configuration will
