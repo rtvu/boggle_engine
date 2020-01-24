@@ -20,11 +20,12 @@ defmodule BoggleEngine.BoardTest do
 
   test "boggle board" do
     :rand.seed(:exsplus, {101, 102, 103})
-    board = Board.new_board(:boggle)
+    version = :boggle
+    board = Board.new_board(version)
     configuration_string = Board.to_string(board)
     configuration_list = Board.to_list(board)
-    board_from_string = Board.from_string(configuration_string)
-    board_from_list = Board.from_list(configuration_list)
+    board_from_string = Board.from_string(configuration_string, version)
+    board_from_list = Board.from_list(configuration_list, version)
 
     assert Board.valid_board?(board) == true
     assert board == board_from_string
@@ -34,11 +35,12 @@ defmodule BoggleEngine.BoardTest do
 
   test "big boggle board" do
     :rand.seed(:exsplus, {101, 102, 103})
-    board = Board.new_board(:big_boggle)
+    version = :big_boggle
+    board = Board.new_board(version)
     configuration_string = Board.to_string(board)
     configuration_list = Board.to_list(board)
-    board_from_string = Board.from_string(configuration_string)
-    board_from_list = Board.from_list(configuration_list)
+    board_from_string = Board.from_string(configuration_string, version)
+    board_from_list = Board.from_list(configuration_list, version)
 
     assert Board.valid_board?(board) == true
     assert board == board_from_string
@@ -48,11 +50,12 @@ defmodule BoggleEngine.BoardTest do
 
   test "super big boggle board" do
     :rand.seed(:exsplus, {101, 102, 103})
-    board = Board.new_board(:super_big_boggle)
+    version = :super_big_boggle
+    board = Board.new_board(version)
     configuration_string = Board.to_string(board)
     configuration_list = Board.to_list(board)
-    board_from_string = Board.from_string(configuration_string)
-    board_from_list = Board.from_list(configuration_list)
+    board_from_string = Board.from_string(configuration_string, version)
+    board_from_list = Board.from_list(configuration_list, version)
 
     assert Board.valid_board?(board) == true
     assert board == board_from_string

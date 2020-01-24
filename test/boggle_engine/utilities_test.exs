@@ -39,4 +39,9 @@ defmodule BoggleEngine.UtilitiesTest do
     assert "738" = Utilities.integer_to_string_with_padding(738, 3)
     assert "1738" = Utilities.integer_to_string_with_padding(1738, 3)
   end
+
+  test "verify list_to_map_with_index/1" do
+    assert %{} = Utilities.list_to_map_with_index([])
+    assert %{0 => 1, 1 => 2, 2 => 3} = Utilities.list_to_map_with_index([1,2,3])
+  end
 end

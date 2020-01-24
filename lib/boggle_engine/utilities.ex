@@ -45,7 +45,6 @@ defmodule BoggleEngine.Utilities do
     letter == String.upcase(letter)
   end
 
-
   # Determines if letter is lowercase.
   def lowercase?(letter) do
     letter == String.downcase(letter)
@@ -56,5 +55,12 @@ defmodule BoggleEngine.Utilities do
     integer
     |> Integer.to_string()
     |> String.pad_leading(count, "0")
+  end
+
+  # Converts list to a map where key is the position of value in list.
+  def list_to_map_with_index(list) do
+    for {value, key} <- Enum.with_index(list), into: %{} do
+      {key, value}
+    end
   end
 end

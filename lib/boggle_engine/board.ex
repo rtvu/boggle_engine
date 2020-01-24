@@ -9,44 +9,79 @@ defmodule BoggleEngine.Board do
   @big_boggle_set "../../resource/big_boggle.txt" |> Path.expand(__DIR__) |> DiceSet.from_file()
   @super_big_boggle_set "../../resource/super_big_boggle.txt" |> Path.expand(__DIR__) |> DiceSet.from_file()
   @dice_sets %{boggle: @boggle_set, big_boggle: @big_boggle_set, super_big_boggle: @super_big_boggle_set}
+  @board_sizes %{boggle: 4, big_boggle: 5, super_big_boggle: 6}
 
-  defstruct [:configuration, :indexed_map]
+  defstruct [:configuration, :version]
 
   # Generates a random %Board{} based on boggle version.
   def new_board(version) do
     version
     |> roll_dice()
-    |> from_list()
+    |> from_list(version)
   end
 
-  # Generates a %Board{} from configuration string.
-  def from_string(configuration) do
-    configuration
+  # Generates a %Board{} from configuration string. Configuration will be
+  # truncated if longer than board version. Configuration will have blanks
+  # appended if shorter than board version.
+  def from_string(string, version) do
+    string
     |> Utilities.chunk_string_on_uppercase()
-    |> from_list()
+    |> from_list(version)
   end
 
-  # Generates a %Board{} from configuration list of strings.
-  def from_list(configuration) do
-    indexed_map = index_list(configuration)
-
-    %Board{configuration: configuration, indexed_map: indexed_map}
+  # Generates a %Board{} from configuration list of strings. Configuration will
+  # be truncated if longer than board version. Configuration will have blanks
+  # appended if shorter than board version.
+  def from_list(list, version) do
+    size = @board_sizes[version]
+    configuration =
+      list
+      |> fit_configuration(size * size)
+      |> Utilities.list_to_map_with_index()
+    %Board{configuration: configuration, version: version}
   end
 
   # Gets configuration as a string.
-  def to_string(%Board{configuration: configuration}) do
-    configuration
+  def to_string(board) do
+    board
+    |> to_list()
     |> List.to_string()
   end
 
   # Gets configuration as a list of strings.
-  def to_list(%Board{configuration: configuration}) do
-    configuration
+  def to_list(%Board{configuration: configuration, version: version}) do
+    size = @board_sizes[version]
+    for position <- 0..(size * size - 1) do
+      configuration[position]
+    end
   end
 
   # Gets value based on board position.
-  def get_value(%Board{indexed_map: indexed_map}, position) do
-    indexed_map[position]
+  def get_value(%Board{configuration: configuration}, position) do
+    configuration[position]
+  end
+
+  # Configuration will be truncated if longer than count. Configuration will
+  # have blanks appended if shorter than count.
+  defp fit_configuration(configuration, count, result \\ [])
+
+  defp fit_configuration(_configuration, 0, result) do
+    Enum.reverse(result)
+  end
+
+  defp fit_configuration([], count, result) do
+    result =
+      for _i <- 1..count, reduce: result do
+        result -> ["#" | result]
+      end
+
+    Enum.reverse(result)
+  end
+
+  defp fit_configuration([first | rest], count, result) do
+    count = count - 1
+    result = [first | result]
+    fit_configuration(rest, count, result)
   end
 
   # Generates a random configuration list of strings.
@@ -56,29 +91,23 @@ defmodule BoggleEngine.Board do
     |> Enum.shuffle()
   end
 
-  # Converts list to a map where the key is the position of value in list.
-  defp index_list(list) do
-    for {letter, index} <- Enum.with_index(list),
-        into: %{} do
-      {index, letter}
-    end
-  end
-
   # Verifies board configuration is valid based on Boggle specifications.
   # Accepts configuration from %Board{}, string, or list of strings.
-  def valid_board?(%Board{configuration: configuration}) do
-    valid_board?(configuration)
+  def valid_board?(board = %Board{}) do
+    board
+    |> to_list()
+    |> valid_board?()
   end
 
-  def valid_board?(configuration) when is_binary(configuration) do
-    configuration
+  def valid_board?(string) when is_binary(string) do
+    string
     |> Utilities.chunk_string_on_uppercase()
     |> valid_board?()
   end
 
-  def valid_board?(configuration) when is_list(configuration) do
-    length = length(configuration)
-    if length != 16 and length != 25 and length != 36 do
+  def valid_board?(list) when is_list(list) do
+    length = length(list)
+    if length not in [16, 25, 36] do
       false
     else
       version =
@@ -92,7 +121,7 @@ defmodule BoggleEngine.Board do
         @dice_sets[version]
         |> Enum.map(&MapSet.new/1)
 
-      verify_configuration(configuration, dice, length)
+      verify_configuration(list, dice, length)
     end
   end
 
