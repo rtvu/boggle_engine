@@ -73,8 +73,8 @@ defmodule BoggleEngine.Board.Solver do
         []
       end
 
-    is_prefix_word? = String.length(prefix) >= minimum_word_length and Lexicon.has_word?(lexicon, prefix)
-    if is_prefix_word? do
+    prefix_is_word? = String.length(prefix) >= minimum_word_length and Lexicon.has_word?(lexicon, prefix)
+    if prefix_is_word? do
       [prefix | words]
     else
       words
