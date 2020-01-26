@@ -6,14 +6,17 @@ defmodule BoggleEngine.Neighbor.Transform do
   board.
   """
 
+  alias BoggleEngine.Neighbor
+
   @type status :: :ok | :error
-  @type neighbor :: nil | integer
-  @type origin :: integer
-  @type position :: neighbor | origin
+  @type position :: Neighbor.position
+  @type neighbor :: nil | position
+  @type origin :: position
   @type delta :: integer
   @type size :: integer
   @type metadata :: {origin, i :: delta, j :: delta, size}
   @type state :: {status, neighbor, metadata}
+  @type transform :: (state -> state)
 
   @callback transform(state :: state) :: state
 end

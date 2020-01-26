@@ -1,38 +1,57 @@
 defmodule BoggleEngine.Board.Solver do
-  @moduledoc false
-  # TODO: Add documentation
+  @moduledoc """
+  Functions to solve boards.
+  """
+
   alias BoggleEngine.Board
-  alias BoggleEngine.Neighbor
   alias BoggleEngine.Board.Solver.Select
+  alias BoggleEngine.Neighbor
+  alias BoggleEngine.Score
 
   @lexicon_binary "../../../resource/lexicon.lex" |> Path.expand(__DIR__) |> File.read!()
 
-  # Finds all words in board.
-  def solve(board, rules, minimum_word_length, lexicon \\ @lexicon_binary)
+  @type board :: Board.t
+  @type rule :: Neighbor.rule
+  @type lexicon :: Lexicon.t
+  @type word :: Score.word
 
-  def solve(board, rules, minimum_word_length, lexicon) when is_binary(lexicon) do
+  @typedoc false
+  @type position :: Neighbor.position
+  @type neighbors :: (position -> [position])
+  @type bitboard :: Select.bitboard
+
+  @doc """
+  Finds all words in board.
+  """
+  @spec solve(board, rule, integer) :: [word]
+  def solve(board, rule, minimum_word_length) do
     lexicon = :erlang.binary_to_term(@lexicon_binary)
-    solve(board, rules, minimum_word_length, lexicon)
+    solve(board, rule, minimum_word_length, lexicon)
   end
 
-  def solve(board, rules, minimum_word_length, lexicon) do
+  @doc """
+  Finds all words in board. Uses provided lexicon for valid words.
+  """
+  @spec solve(board, rule, integer, lexicon) :: [word]
+  def solve(board, rule, minimum_word_length, lexicon) do
     size = Board.get_size(board)
-    get_neighbors = &(Neighbor.get_neighbors(&1, size, rules))
+    neighbors = &(Neighbor.get_neighbors(&1, size, rule))
 
-    find_words(board, get_neighbors, minimum_word_length, lexicon)
+    find_words(board, neighbors, minimum_word_length, lexicon)
     |> MapSet.new()
     |> MapSet.to_list()
   end
 
-  # Initiates head of word search.
-  defp find_words(board, get_neighbors, minimum_word_length, lexicon) do
+  # Initiates start of word search.
+  @spec find_words(board, neighbors, integer, lexicon) :: [word]
+  defp find_words(board, neighbors, minimum_word_length, lexicon) do
     size = Board.get_size(board)
 
     words =
       for position <- 0..(size * size - 1) do
         value = Board.get_value(board, position)
-        bit_board = Select.mark_position(0, position)
-        search(value, bit_board, position, board, get_neighbors, minimum_word_length, lexicon)
+        bitboard = Select.mark_position(0, position)
+        search(value, bitboard, position, board, neighbors, minimum_word_length, lexicon)
       end
 
     words
@@ -41,11 +60,12 @@ defmodule BoggleEngine.Board.Solver do
   end
 
   # Determines whether searching neighbors is necessary for words.
-  defp search(prefix, bit_board, position, board, get_neighbors, minimum_word_length, lexicon) do
+  @spec search(String.t, bitboard, position, board, neighbors, integer, lexicon) :: [word]
+  defp search(prefix, bitboard, position, board, neighbors, minimum_word_length, lexicon) do
     has_prefix? = Lexicon.has_prefix?(lexicon, prefix)
     words =
       if has_prefix? do
-        deep_search(prefix, bit_board, position, board, get_neighbors, minimum_word_length, lexicon)
+        deep_search(prefix, bitboard, position, board, neighbors, minimum_word_length, lexicon)
       else
         []
       end
@@ -59,14 +79,15 @@ defmodule BoggleEngine.Board.Solver do
   end
 
   # Searches neighbors to make words.
-  defp deep_search(prefix, bit_board, position, board, get_neighbors, minimum_word_length, lexicon) do
-    for next_position <- get_neighbors.(position),
-        not Select.position_marked?(bit_board, next_position) do
+  @spec deep_search(String.t, bitboard, position, board, neighbors, integer, lexicon) :: [word]
+  defp deep_search(prefix, bitboard, position, board, neighbors, minimum_word_length, lexicon) do
+    for next_position <- neighbors.(position),
+        not Select.position_marked?(bitboard, next_position) do
       next_value = Board.get_value(board, next_position)
       next_prefix = prefix <> next_value
-      next_bit_board = Select.mark_position(bit_board, next_position)
+      next_bitboard = Select.mark_position(bitboard, next_position)
 
-      search(next_prefix, next_bit_board, next_position, board, get_neighbors, minimum_word_length, lexicon)
+      search(next_prefix, next_bitboard, next_position, board, neighbors, minimum_word_length, lexicon)
     end
   end
 end

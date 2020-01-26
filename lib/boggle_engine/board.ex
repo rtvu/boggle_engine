@@ -5,6 +5,7 @@ defmodule BoggleEngine.Board do
 
   alias BoggleEngine.Board
   alias BoggleEngine.Board.DiceSet
+  alias BoggleEngine.Neighbor
   alias BoggleEngine.Utilities
 
   @boggle_set "../../resource/boggle.txt" |> Path.expand(__DIR__) |> DiceSet.from_file()
@@ -21,7 +22,8 @@ defmodule BoggleEngine.Board do
               }
   @type version :: :boggle | :big_boggle | :super_big_boggle
   @type tile :: String.grapheme | String.t
-  @type position :: integer
+  @type position :: Neighbor.position
+  @type size :: 4 | 5 | 6
 
   @doc """
   Creates a random board based on version.
@@ -93,7 +95,7 @@ defmodule BoggleEngine.Board do
   @doc """
   Gets board size.
   """
-  @spec get_size(t | version) :: integer
+  @spec get_size(t | version) :: size
   def get_size(%Board{version: version}) do
     get_size(version)
   end

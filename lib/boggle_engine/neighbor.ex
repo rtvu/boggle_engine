@@ -3,6 +3,7 @@ defmodule BoggleEngine.Neighbor do
   Functions to determine neighbors.
   """
 
+  alias BoggleEngine.Board
   alias BoggleEngine.Neighbor.Transform
   alias BoggleEngine.Neighbor.Transform.CornerFilter
   alias BoggleEngine.Neighbor.Transform.EdgeFilter
@@ -11,10 +12,10 @@ defmodule BoggleEngine.Neighbor do
 
   @preset_rules [:standard, :edge, :corner, :wrap, :edge_wrap, :corner_wrap]
 
-  @type rule :: :standard | :edge | :corner | :wrap | :edge_wrap | :corner_wrap | (state -> state)
-  @type state :: Transform.state
+  @type rule :: :standard | :edge | :corner | :wrap | :edge_wrap | :corner_wrap | transform
+  @type transform :: Transform.transform
   @type position :: integer
-  @type size :: 4 | 5 | 6
+  @type size :: Board.size
 
   @typedoc false
   @type key :: :standard | :edge | :corner | :wrap | :edge_wrap | :corner_wrap

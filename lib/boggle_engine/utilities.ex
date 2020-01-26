@@ -1,10 +1,15 @@
 defmodule BoggleEngine.Utilities do
-  @moduledoc false
+  @moduledoc """
+  Utility functions for project.
+  """
 
-  # Takes a string and returns a list of strings separated on uppercase.
-  # Leading lowercase letters will be dropped. Letters that do not have cases
-  # will be chunked like uppercase letters. Lower case letters trailing no case
-  # letters will be dropped.
+  @doc """
+  Takes a string and returns a list of strings separated on uppercase. Leading
+  lowercase letters will be dropped. Letters that do not have cases will be
+  chunked like uppercase letters. Lower case letters trailing no case letters
+  will be dropped.
+  """
+  @spec chunk_string_on_uppercase(String.t) :: [String.t]
   def chunk_string_on_uppercase(string) do
     string
     |> String.graphemes
@@ -13,6 +18,7 @@ defmodule BoggleEngine.Utilities do
 
   # Helper function for chunk_string_on_uppercase/1 to chunk the list of
   # strings.
+  @spec handle_chunking(String.grapheme, String.t | {nocase}) :: {:cont, String.t} | {:cont, String.t, String.t} | {:cont, {nocase}} | {:cont, String.t, {nocase}} when nocase: String.grapheme
   defp handle_chunking(letter, accumulator) do
     uppercase? = uppercase?(letter)
     lowercase? = lowercase?(letter)
@@ -32,6 +38,7 @@ defmodule BoggleEngine.Utilities do
 
   # Helper function for chunk_string_on_uppercase/1 to handle the last
   # accumulator value.
+  @spec handle_after_chunking(String.t | {nocase}) :: {:cont, String.t} | {:cont, String.t, String.t} | {:cont, nocase, String.t} when nocase: String.grapheme
   defp handle_after_chunking(accumulator) do
     case accumulator do
       "" -> {:cont, ""}
@@ -40,32 +47,48 @@ defmodule BoggleEngine.Utilities do
     end
   end
 
-  # Determines if letter is uppercase.
-  def uppercase?(letter) do
-    letter == String.upcase(letter)
+  @doc """
+  Determines if string is uppercase. A string is uppercase if it does not
+  contain lowercase letters.
+  """
+  @spec uppercase?(String.t) :: boolean
+  def uppercase?(string) do
+    string == String.upcase(string)
   end
 
-  # Determines if letter is lowercase.
-  def lowercase?(letter) do
-    letter == String.downcase(letter)
+  @doc """
+  Determines if string is lowercase. A string is lowercase if it does not
+  contain uppercase letters.
+  """
+  @spec lowercase?(String.t) :: boolean
+  def lowercase?(string) do
+    string == String.downcase(string)
   end
 
-  # Converts integer to string representation with 0s as lead padding.
+  @doc """
+  Converts integer to string representation with 0s as lead padding.
+  """
+  @spec integer_to_string_with_padding(integer, integer) :: String.t
   def integer_to_string_with_padding(integer, count) do
     integer
     |> Integer.to_string()
     |> String.pad_leading(count, "0")
   end
 
-  # Converts list to a map where key is the position of value in list.
+  @doc """
+  Converts list to a map where key is the position of value in list.
+  """
+  @spec list_to_map_with_index([term]) :: %{required(integer) => term}
   def list_to_map_with_index(list) do
     for {value, key} <- Enum.with_index(list), into: %{} do
       {key, value}
     end
   end
 
-  # List will be truncated if longer than count. List will have filler appended
-  # if shorter than count.
+  @doc """
+  List will be truncated if longer than count. List will have filler appended
+  if shorter than count.
+  """
   @spec fit_list([term], integer, term) :: [term]
   def fit_list(list, count, filler) do
     fit_list(list, count, filler, [])
