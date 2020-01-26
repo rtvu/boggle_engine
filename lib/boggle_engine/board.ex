@@ -19,7 +19,7 @@ defmodule BoggleEngine.Board do
                 configuration: %{required(position) => tile},
                 version: version
               }
-  @type version :: BoggleEngine.version
+  @type version :: :boggle | :big_boggle | :super_big_boggle
   @type tile :: String.grapheme | String.t
   @type position :: integer
 

@@ -4,7 +4,7 @@ defmodule BoggleEngine.Score do
   """
 
   @type word :: String.t
-  @type version :: BoggleEngine.version
+  @type version :: BoggleEngine.Board.version
   @type score :: integer
 
   @doc """
