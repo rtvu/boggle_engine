@@ -17,8 +17,7 @@ defmodule BoggleEngine.Neighbor do
   @type position :: integer
   @type size :: Board.size
 
-  @typedoc false
-  @type key :: :standard | :edge | :corner | :wrap | :edge_wrap | :corner_wrap
+  @typep key :: :standard | :edge | :corner | :wrap | :edge_wrap | :corner_wrap
 
   @doc """
   Gets list of neighbor positions.

@@ -15,10 +15,9 @@ defmodule BoggleEngine.Board.Solver do
   @type lexicon :: Lexicon.t
   @type word :: Score.word
 
-  @typedoc false
-  @type position :: Neighbor.position
-  @type neighbors :: (position -> [position])
-  @type bitboard :: Select.bitboard
+  @typep position :: Neighbor.position
+  @typep neighbors :: (position -> [position])
+  @typep bitboard :: Select.bitboard
 
   @doc """
   Finds all words in board.
