@@ -74,6 +74,33 @@ defmodule BoggleEngine.Board do
   end
 
   @doc """
+  Pretty prints board.
+  """
+  @spec pretty_print(t) :: String.t
+  def pretty_print(board = %Board{}) do
+    size = get_size(board)
+
+    list =
+      board
+      |> to_list()
+
+    longest_tile =
+      list
+      |> Stream.map(&String.length/1)
+      |> Enum.max()
+
+    separator_length = 3 * (size - 1) + longest_tile * size
+    separator_string = String.duplicate("-", separator_length) <> "\n"
+
+    list
+    |> Stream.map(&(String.pad_leading(&1, longest_tile)))
+    |> Stream.chunk_every(size, size, :discard)
+    |> Stream.map(&Enum.join(&1, " | "))
+    |> Stream.map(&(&1 <> "\n"))
+    |> Enum.join(separator_string)
+  end
+
+  @doc """
   Gets board configuration as a list of strings.
   """
   @spec to_list(t) :: [tile]
