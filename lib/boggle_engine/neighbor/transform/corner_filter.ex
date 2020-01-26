@@ -1,13 +1,14 @@
 defmodule BoggleEngine.Neighbor.Transform.CornerFilter do
-  @moduledoc false
-
-  # Only corner deltas are allowed.
+  @moduledoc """
+  CornerFilter returns corner delta states unchanged and errors on edge delta
+  states.
+  """
 
   alias BoggleEngine.Neighbor.Transform
 
   @behaviour Transform
 
-  @impl Transform
+  @impl true
   def transform(state = {:error, _neighbor, _metadata}) do
     state
   end

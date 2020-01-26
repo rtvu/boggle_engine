@@ -1,18 +1,29 @@
 defmodule BoggleEngine.Board.DiceSet do
-  @moduledoc false
+  @moduledoc """
+  Functions to generate dice sets.
 
-  # A dice set is represented by a list of dice.
+  A dice set is represented by a list of dice.
+  """
 
   alias BoggleEngine.Board.Die
 
-  # Gets a dice set from file.
+  @type t :: [die]
+  @type die :: Die.t
+
+  @doc """
+  Creates a dice set from file. Each line in file defines a die.
+  """
+  @spec from_file(Path.t) :: t
   def from_file(path) do
     path
     |> File.read!()
     |> from_string()
   end
 
-  # Gets a dice set from string.
+  @doc """
+  Creates a dice set from string.
+  """
+  @spec from_string(String.t) :: t
   def from_string(string) do
     string
     |> String.trim()

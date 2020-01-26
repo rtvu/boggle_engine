@@ -1,13 +1,14 @@
 defmodule BoggleEngine.Neighbor.Transform.StandardMap do
-  @moduledoc false
-
-  # Deltas to outside of board are not allowed.
+  @moduledoc """
+  StandardMap returns states within board unchanged and errors on states
+  outside of board.
+  """
 
   alias BoggleEngine.Neighbor.Transform
 
   @behaviour Transform
 
-  @impl Transform
+  @impl true
   def transform(state = {:error, _neighbor, _metadata}) do
     state
   end

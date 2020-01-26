@@ -1,5 +1,7 @@
 defmodule BoggleEngine.Board do
-  @moduledoc false
+  @moduledoc """
+  Functions to create and interact with Boggle board.
+  """
 
   alias BoggleEngine.Board
   alias BoggleEngine.Board.DiceSet
@@ -13,42 +15,66 @@ defmodule BoggleEngine.Board do
 
   defstruct [:configuration, :version]
 
-  # Generates a random %Board{} based on boggle version.
+  @type t :: %__MODULE__{
+                configuration: %{required(position) => tile},
+                version: version
+              }
+  @type version :: BoggleEngine.version
+  @type tile :: String.grapheme | String.t
+  @type position :: integer
+
+  @doc """
+  Creates a random board based on version.
+  """
+  @spec new_board(version) :: t
   def new_board(version) do
     version
     |> roll_dice()
     |> from_list(version)
   end
 
-  # Generates a %Board{} from configuration string. Configuration will be
-  # truncated if longer than board version. Configuration will have blanks
-  # appended if shorter than board version.
+  @doc """
+  Creates a board from configuration string. Each board position is defined by
+  an uppercase letter followed by optional lowercase letters. Configuration will
+  be truncated if longer than board. Configuration will have blanks appended if
+  shorter than board.
+  """
+  @spec from_string(String.t, version) :: t
   def from_string(string, version) do
     string
     |> Utilities.chunk_string_on_uppercase()
     |> from_list(version)
   end
 
-  # Generates a %Board{} from configuration list of strings. Configuration will
-  # be truncated if longer than board version. Configuration will have blanks
-  # appended if shorter than board version.
+  @doc """
+  Creates a board from configuration list of strings. Configuration will be
+  truncated if longer than board. Configuration will have blanks appended if
+  shorter than board.
+  """
+  @spec from_list([tile], version) :: t
   def from_list(list, version) do
     size = get_size(version)
     configuration =
       list
-      |> fit_configuration(size * size)
+      |> Utilities.fit_list(size * size, "#")
       |> Utilities.list_to_map_with_index()
     %Board{configuration: configuration, version: version}
   end
 
-  # Gets configuration as a string.
-  def to_string(board) do
+  @doc """
+  Gets board configuration as a string.
+  """
+  @spec to_string(t) :: String.t
+  def to_string(board = %Board{}) do
     board
     |> to_list()
     |> List.to_string()
   end
 
-  # Gets configuration as a list of strings.
+  @doc """
+  Gets board configuration as a list of strings.
+  """
+  @spec to_list(t) :: [tile]
   def to_list(%Board{configuration: configuration, version: version}) do
     size = get_size(version)
     for position <- 0..(size * size - 1) do
@@ -56,12 +82,18 @@ defmodule BoggleEngine.Board do
     end
   end
 
-  # Gets value based on board position.
+  @doc """
+  Gets value based on board position.
+  """
+  @spec get_value(t, position) :: tile
   def get_value(%Board{configuration: configuration}, position) do
     configuration[position]
   end
 
-  # Gets board size.
+  @doc """
+  Gets board size.
+  """
+  @spec get_size(t | version) :: integer
   def get_size(%Board{version: version}) do
     get_size(version)
   end
@@ -70,38 +102,27 @@ defmodule BoggleEngine.Board do
     @board_sizes[version]
   end
 
-  # Configuration will be truncated if longer than count. Configuration will
-  # have blanks appended if shorter than count.
-  defp fit_configuration(configuration, count, result \\ [])
-
-  defp fit_configuration(_configuration, 0, result) do
-    Enum.reverse(result)
+  @doc """
+  Gets version.
+  """
+  @spec get_version(t) :: version
+  def get_version(%Board{version: version}) do
+    version
   end
 
-  defp fit_configuration([], count, result) do
-    result =
-      for _i <- 1..count, reduce: result do
-        result -> ["#" | result]
-      end
-
-    Enum.reverse(result)
-  end
-
-  defp fit_configuration([first | rest], count, result) do
-    count = count - 1
-    result = [first | result]
-    fit_configuration(rest, count, result)
-  end
-
-  # Generates a random configuration list of strings.
+  # Creates a random configuration based on version.
+  @spec roll_dice(version) :: [tile]
   defp roll_dice(version) do
     @dice_sets[version]
     |> Enum.map(&Enum.random/1)
     |> Enum.shuffle()
   end
 
-  # Verifies board configuration is valid based on Boggle specifications.
-  # Accepts configuration from %Board{}, string, or list of strings.
+  @doc """
+  Verifies board is a valid Boggle game. Accepts `%Board{}`, string, or list of
+  strings.
+  """
+  @spec valid_board?(t | String.t | [tile]) :: boolean
   def valid_board?(board = %Board{}) do
     board
     |> to_list()
@@ -136,6 +157,7 @@ defmodule BoggleEngine.Board do
 
   # Verifies configuration is valid by determining whether there are any
   # mismatches between configuration and dice.
+  @spec verify_configuration([tile], [tile], integer) :: boolean
   defp verify_configuration(configuration, dice, length) do
     # Runs matching problem in a separate process to avoid manually handling
     # garbage collection.
@@ -149,6 +171,7 @@ defmodule BoggleEngine.Board do
 
   # Generates list of maximum matches of faces and dice. This problem can be
   # structured as a bipartite graph and solved by finding the maximum flow.
+  @spec match_faces_to_dice([tile], [tile], integer) :: :graph_lib.flow | (error :: {charlist, charlist})
   defp match_faces_to_dice(faces, dice, length) do
     graph = build_base_graph(length)
 
@@ -166,6 +189,7 @@ defmodule BoggleEngine.Board do
   end
 
   # Builds base graph specified by length.
+  @spec build_base_graph(integer) :: :graph.graph
   defp build_base_graph(length) do
     # Creates empty graph, adds source vertex, and adds sink vertex
     graph = :graph.empty(:directed, :d)

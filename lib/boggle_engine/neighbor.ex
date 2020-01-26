@@ -1,6 +1,9 @@
 defmodule BoggleEngine.Neighbor do
-  @moduledoc false
+  @moduledoc """
+  Functions to determine neighbors.
+  """
 
+  alias BoggleEngine.Neighbor.Transform
   alias BoggleEngine.Neighbor.Transform.CornerFilter
   alias BoggleEngine.Neighbor.Transform.EdgeFilter
   alias BoggleEngine.Neighbor.Transform.StandardMap
@@ -8,7 +11,18 @@ defmodule BoggleEngine.Neighbor do
 
   @preset_rules [:standard, :edge, :corner, :wrap, :edge_wrap, :corner_wrap]
 
-  # Gets list of neighbor positions.
+  @type rule :: :standard | :edge | :corner | :wrap | :edge_wrap | :corner_wrap | (state -> state)
+  @type state :: Transform.state
+  @type position :: integer
+  @type size :: 4 | 5 | 6
+
+  @typedoc false
+  @type key :: :standard | :edge | :corner | :wrap | :edge_wrap | :corner_wrap
+
+  @doc """
+  Gets list of neighbor positions.
+  """
+  @spec get_neighbors(position, size, rule) :: [position]
   def get_neighbors(position, size, rules) do
     transform =
       cond do
@@ -34,6 +48,7 @@ defmodule BoggleEngine.Neighbor do
   #
   # Anonymous functions cannot be defined during compile time. So function
   # call is necessary to generate and retrieve the rules transform.
+  @spec get_rules(key) :: rule
   defp get_rules(key) do
     case key do
       :standard -> &(&1 |> StandardMap.transform())

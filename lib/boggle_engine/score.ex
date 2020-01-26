@@ -1,14 +1,28 @@
 defmodule BoggleEngine.Score do
-  @moduledoc false
+  @moduledoc """
+  Functions to calculate scores.
+  """
 
-  # Calculates score from word list.
+  @type word :: String.t
+  @type version :: BoggleEngine.version
+  @type score :: integer
+
+  @doc """
+  Calculates score for word list.
+  """
+  @spec score_list([word], version) :: score
   def score_list(list, version) do
     list
+    |> MapSet.new()
+    |> MapSet.to_list()
     |> Enum.map(&score_word(&1, version))
     |> Enum.sum()
   end
 
-  # Calculates the score for word.
+  @doc """
+  Calculates score for word.
+  """
+  @spec score_word(word, version) :: score
   def score_word(word, version) do
     word
     |> String.length()
@@ -16,6 +30,9 @@ defmodule BoggleEngine.Score do
   end
 
   # Calculates score based on word length.
+  @spec score_length(integer, version) :: score
+  defp score_length(length, version)
+
   defp score_length(length, :boggle) do
     cond do
       length == 3 -> 1

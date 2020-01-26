@@ -44,4 +44,11 @@ defmodule BoggleEngine.UtilitiesTest do
     assert %{} = Utilities.list_to_map_with_index([])
     assert %{0 => 1, 1 => 2, 2 => 3} = Utilities.list_to_map_with_index([1,2,3])
   end
+
+  test "verify fit_list/3" do
+    assert [nil, nil, nil, nil] = Utilities.fit_list([], 4, nil)
+    assert [1, 2, 3, nil] = Utilities.fit_list([1, 2, 3,], 4, nil)
+    assert [1, 2, 3, 4] = Utilities.fit_list([1, 2, 3, 4], 4, nil)
+    assert [1, 2, 3, 4] = Utilities.fit_list([1, 2, 3, 4, 5], 4, nil)
+  end
 end

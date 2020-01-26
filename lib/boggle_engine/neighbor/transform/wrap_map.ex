@@ -1,13 +1,14 @@
 defmodule BoggleEngine.Neighbor.Transform.WrapMap do
-  @moduledoc false
-
-  # Deltas to outside of board are remapped to inside the board.
+  @moduledoc """
+  WrapMap returns states within board unchanged and returns states outside of
+  board wrapped back into board.
+  """
 
   alias BoggleEngine.Neighbor.Transform
 
   @behaviour Transform
 
-  @impl Transform
+  @impl true
   def transform(state = {:error, _neighbor, _metadata}) do
     state
   end

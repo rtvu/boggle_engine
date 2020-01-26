@@ -1,11 +1,11 @@
-defmodule BoggleEngine.Solver do
+defmodule BoggleEngine.Board.Solver do
   @moduledoc false
-
+  # TODO: Add documentation
   alias BoggleEngine.Board
   alias BoggleEngine.Neighbor
-  alias BoggleEngine.Solver.Select
+  alias BoggleEngine.Board.Solver.Select
 
-  @lexicon_binary "../../resource/lexicon.lex" |> Path.expand(__DIR__) |> File.read!()
+  @lexicon_binary "../../../resource/lexicon.lex" |> Path.expand(__DIR__) |> File.read!()
 
   # Finds all words in board.
   def solve(board, rules, minimum_word_length, lexicon \\ @lexicon_binary)
@@ -35,7 +35,9 @@ defmodule BoggleEngine.Solver do
         search(value, bit_board, position, board, get_neighbors, minimum_word_length, lexicon)
       end
 
-    List.flatten(words)
+    words
+    |> List.flatten()
+    |> Enum.map(&String.downcase/1)
   end
 
   # Determines whether searching neighbors is necessary for words.

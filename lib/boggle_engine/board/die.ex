@@ -1,12 +1,21 @@
 defmodule BoggleEngine.Board.Die do
-  @moduledoc false
+  @moduledoc """
+  Functions to generate a die.
 
-  # Die is specified by a list of graphemes. Each capital letter signals a
-  # different face of the die. Die is represented by a 6 element string list.
+  A die is specified by a 6 element list of faces. Each face of the die
+  contains either a single non-case letter or an uppercase letter followed by
+  optional lowercase letters.
+  """
 
   alias BoggleEngine.Utilities
 
-  # Gets a die from string.
+  @type t :: [face]
+  @type face :: String.grapheme | String.t
+
+  @doc """
+  Creates a die from string.
+  """
+  @spec from_string(String.t) :: t
   def from_string(string) do
     Utilities.chunk_string_on_uppercase(string)
   end

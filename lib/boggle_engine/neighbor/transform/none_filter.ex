@@ -1,13 +1,13 @@
 defmodule BoggleEngine.Neighbor.Transform.NoneFilter do
-  @moduledoc false
-
-  # All deltas are allowed.
+  @moduledoc """
+  NoneFilter returns all states unchanged.
+  """
 
   alias BoggleEngine.Neighbor.Transform
 
   @behaviour Transform
 
-  @impl Transform
+  @impl true
   def transform(state) do
     state
   end

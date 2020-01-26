@@ -63,4 +63,31 @@ defmodule BoggleEngine.Utilities do
       {key, value}
     end
   end
+
+  # List will be truncated if longer than count. List will have filler appended
+  # if shorter than count.
+  @spec fit_list([term], integer, term) :: [term]
+  def fit_list(list, count, filler) do
+    fit_list(list, count, filler, [])
+  end
+
+  @spec fit_list([term], integer, term, [term]) :: [term]
+  defp fit_list(_configuration, 0, _filler, result) do
+    Enum.reverse(result)
+  end
+
+  defp fit_list([], count, filler, result) do
+    result =
+      for _i <- 1..count, reduce: result do
+        result -> [filler | result]
+      end
+
+    Enum.reverse(result)
+  end
+
+  defp fit_list([first | rest], count, filler, result) do
+    count = count - 1
+    result = [first | result]
+    fit_list(rest, count, filler, result)
+  end
 end
