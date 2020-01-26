@@ -6,21 +6,25 @@ defmodule BoggleEngine.Board.Solver.LexiconManager do
   @lexicon_binary_path "../../../../resource/lexicon.lex" |> Path.expand(__DIR__)
   @dictionary_text_path "../../../../resource/dictionary.txt" |> Path.expand(__DIR__)
 
-  @doc false
+  @doc """
+  Creates lexicon from built-in lexicon binary.
+  """
   @spec from_lexicon_file!() :: Lexicon.t
   def from_lexicon_file!() do
     from_lexicon_file!(@lexicon_binary_path)
   end
 
   @doc """
-  Creates lexicon from lexicon binary path
+  Creates lexicon from lexicon binary path.
   """
   @spec from_lexicon_file!(Path.t) :: Lexicon.t
   def from_lexicon_file!(path) do
     Lexicon.from_file!(path)
   end
 
-  @doc false
+  @doc """
+  Creates lexicon from built-in dictionary text.
+  """
   @spec from_dictionary_file!() :: Lexicon.t
   def from_dictionary_file!() do
     from_dictionary_file!(@dictionary_text_path)
